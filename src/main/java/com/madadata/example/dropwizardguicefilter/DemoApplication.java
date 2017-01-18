@@ -5,10 +5,13 @@ import com.google.inject.Stage;
 import com.hubspot.dropwizard.guice.GuiceBundle;
 import com.madadata.example.dropwizardguicefilter.resource.DemoResource;
 import io.dropwizard.Application;
+import io.dropwizard.auth.AuthDynamicFeature;
+import io.dropwizard.auth.AuthValueFactoryProvider;
 import io.dropwizard.configuration.EnvironmentVariableSubstitutor;
 import io.dropwizard.configuration.SubstitutingSourceProvider;
 import io.dropwizard.setup.Bootstrap;
 import io.dropwizard.setup.Environment;
+import org.glassfish.jersey.server.filter.RolesAllowedDynamicFeature;
 
 /**
  * Created by jiayu on 1/18/17.
@@ -46,6 +49,9 @@ public class DemoApplication extends Application<DemoConfiguration> {
 
     @Override
     public void run(DemoConfiguration demoConfiguration, Environment environment) throws Exception {
+        environment.jersey().register(guiceBundle.getInjector().getInstance(AuthDynamicFeature.class));
+        environment.jersey().register(guiceBundle.getInjector().getInstance(RolesAllowedDynamicFeature.class));
+        environment.jersey().register(guiceBundle.getInjector().getInstance(AuthValueFactoryProvider.Binder.class));
         environment.jersey().register(guiceBundle.getInjector().getInstance(DemoResource.class));
     }
 }
